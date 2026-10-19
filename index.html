@@ -219,7 +219,7 @@
     </main>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkk4RGkYa11he5pgTbUkBzEu6TjOicGsI0OlRzYy2knUE5_yMezCO6ZufPR18uBv_Puw/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw2MxxzaU3PPu9TKGb-8TVQs0IFwBQlFyf1kwwE5d8s4Xcw4X0_JwVdS9Saz799xAqF/exec';
         let allJobData = [];
 
         function switchTab(tabId) {
@@ -316,34 +316,59 @@
             document.getElementById('apply-area').value = warehouseName;
         }
 
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
         document.getElementById('applyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btn-submit-apply');
-            btn.innerText = 'กำลังบันทึกประวัติ...';
+            btn.innerText = 'กำลังอัปโหลดรูปภาพและบันทึกข้อมูล...';
             btn.disabled = true;
 
-            const payload = {
-                type: 'ฝากประวัติสมัครงานแบบละเอียด',
-                fullnameTh: document.getElementById('apply-name-th').value,
-                fullnameEng: document.getElementById('apply-name-eng').value,
-                idCard: document.getElementById('apply-idcard').value,
-                idCardExpiry: document.getElementById('apply-idcard-expiry').value,
-                dob: document.getElementById('apply-dob').value,
-                phone: document.getElementById('apply-phone').value,
-                vehicle: document.getElementById('apply-vehicle').value,
-                startDate: document.getElementById('apply-date').value,
-                dcTarget: document.getElementById('apply-area').value,
-                sup: document.getElementById('apply-sup').value,
-                mapLink: document.getElementById('apply-map').value,
-                bankName: document.getElementById('apply-bank-name').value,
-                bankNo: document.getElementById('apply-bank-no').value,
-                bankAccName: document.getElementById('apply-bank-accname').value,
-                urgenceName: document.getElementById('apply-urgence-name').value,
-                urgenceRelation: document.getElementById('apply-urgence-relation').value,
-                urgencePhone: document.getElementById('apply-urgence-phone').value
-            };
-
             try {
+                const fileIdCard = document.getElementById('file-idcard').files[0];
+                const fileLicense = document.getElementById('file-license').files[0];
+                const fileBank = document.getElementById('file-bank').files[0];
+                const fileHouse = document.getElementById('file-house').files[0];
+                const fileVehicleReg = document.getElementById('file-vehicle-reg').files[0];
+                const fileCarPhoto = document.getElementById('file-car-photo').files[0];
+                const fileUrgenceId = document.getElementById('file-urgence-id').files[0];
+
+                const payload = {
+                    type: 'ฝากประวัติสมัครงานแบบละเอียด',
+                    fullnameTh: document.getElementById('apply-name-th').value,
+                    fullnameEng: document.getElementById('apply-name-eng').value,
+                    idCard: document.getElementById('apply-idcard').value,
+                    idCardExpiry: document.getElementById('apply-idcard-expiry').value,
+                    dob: document.getElementById('apply-dob').value,
+                    phone: document.getElementById('apply-phone').value,
+                    vehicle: document.getElementById('apply-vehicle').value,
+                    startDate: document.getElementById('apply-date').value,
+                    dcTarget: document.getElementById('apply-area').value,
+                    sup: document.getElementById('apply-sup').value,
+                    mapLink: document.getElementById('apply-map').value,
+                    bankName: document.getElementById('apply-bank-name').value,
+                    bankNo: document.getElementById('apply-bank-no').value,
+                    bankAccName: document.getElementById('apply-bank-accname').value,
+                    urgenceName: document.getElementById('apply-urgence-name').value,
+                    urgenceRelation: document.getElementById('apply-urgence-relation').value,
+                    urgencePhone: document.getElementById('apply-urgence-phone').value,
+                    
+                    fileIdCard: fileIdCard ? await fileToBase64(fileIdCard) : '',
+                    fileLicense: fileLicense ? await fileToBase64(fileLicense) : '',
+                    fileBank: fileBank ? await fileToBase64(fileBank) : '',
+                    fileHouse: fileHouse ? await fileToBase64(fileHouse) : '',
+                    fileVehicleReg: fileVehicleReg ? await fileToBase64(fileVehicleReg) : '',
+                    fileCarPhoto: fileCarPhoto ? await fileToBase64(fileCarPhoto) : '',
+                    fileUrgenceId: fileUrgenceId ? await fileToBase64(fileUrgenceId) : ''
+                };
+
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -351,13 +376,14 @@
                     body: JSON.stringify(payload)
                 });
                 
-                alert('ฝากประวัติสมัครงานเรียบร้อยแล้ว!\n\n⚠️ รบกวนกดปุ่ม "ติดต่อแอดมิน (LINE)" ด้านบน เพื่อแจ้งข้อมูลและยืนยันรับงานทันทีครับ!');
+                alert('ฝากประวัติสมัครงานและอัปโหลดรูปภาพเรียบร้อยแล้ว!\n\n⚠️ รบกวนกดปุ่ม "ติดต่อแอดมิน (LINE)" ด้านบน เพื่อแจ้งข้อมูลและยืนยันรับงานทันทีครับ!');
                 
                 e.target.reset();
-                document.getElementById('apply-sup').value = 'SF (顺丰同城)'; // คงค่าเริ่มต้นไว้หลังรีเซ็ตฟอร์ม
+                document.getElementById('apply-sup').value = 'SF (顺丰同城)';
                 switchTab('jobs');
             } catch (error) {
-                alert('เกิดข้อผิดพลาด กรุณาลองใหม่');
+                alert('เกิดข้อผิดพลาดในการอัปโหลดรูป กรุณาลองใหม่อีกครั้ง');
+                console.error(error);
             } finally {
                 btn.innerText = 'ยืนยันการฝากประวัติสมัครงาน';
                 btn.disabled = false;
