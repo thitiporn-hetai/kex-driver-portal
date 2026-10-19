@@ -40,7 +40,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-gray-900">📍 รายชื่อคลังสินค้า KEX และโควตาเปิดรับสมัคร</h2>
-                        <p class="text-xs font-medium text-gray-600">ซิงค์ข้อมูลแบบเรียลไทม์จาก Google Sheets</p>
+                        <p class="text-xs font-medium text-gray-600">เรียงตามคลังที่เปิดรับจำนวนมากที่สุดไปน้อยที่สุด</p>
                     </div>
                     <input type="text" id="searchInput" onkeyup="filterJobs()" placeholder="🔍 ค้นหาชื่อคลัง หรือ DC Code..." class="px-4 py-2 border rounded-xl text-sm w-full md:w-72 focus:ring-2 focus:ring-red-500 focus:outline-none">
                 </div>
@@ -52,51 +52,166 @@
 
         <!-- Tab 2: สมัครงาน -->
         <section id="tab-apply" class="space-y-4 hidden">
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 max-w-2xl mx-auto">
-                <h2 class="text-lg font-bold text-gray-900 text-center mb-1">ฝากประวัติสมัครงาน / จองรอบวิ่ง</h2>
-                <p class="text-xs font-medium text-gray-600 text-center mb-6">กรอกข้อมูลส่วนตัวเพื่อให้เจ้าหน้าที่ติดต่อกลับทันทีที่มีโควตาว่าง</p>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 max-w-3xl mx-auto">
+                <h2 class="text-lg font-bold text-gray-900 text-center mb-1">📝 แบบฟอร์มฝากประวัติสมัครงาน / จองรอบวิ่ง KEX</h2>
+                <p class="text-xs font-medium text-gray-600 text-center mb-6">กรอกข้อมูลส่วนตัวและรายละเอียดให้ครบถ้วนเพื่อให้เจ้าหน้าที่ติดต่อกลับ</p>
                 
-                <form id="applyForm" class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-1">ชื่อ - นามสกุล (ภาษาไทย) *</label>
-                            <input type="text" id="apply-name" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                <form id="applyForm" class="space-y-6">
+                    <!-- ส่วนที่ 1: ข้อมูลส่วนตัว -->
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200 space-y-4">
+                        <h3 class="font-bold text-sm text-red-700 border-b pb-2">1. ข้อมูลส่วนตัวและข้อมูลการทำงาน</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">ชื่อ-นามสกุลพร้อมคำนำหน้า (ไทย) *</label>
+                                <input type="text" id="apply-name-th" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">ชื่อ-นามสกุลพร้อมคำนำหน้า (Eng) *</label>
+                                <input type="text" id="apply-name-eng" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-1">เบอร์โทรศัพท์ *</label>
-                            <input type="tel" id="apply-phone" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">เลขบัตรประชาชน *</label>
+                                <input type="text" id="apply-idcard" maxlength="13" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">วันหมดอายุบัตรประจำตัวประชาชน *</label>
+                                <input type="date" id="apply-idcard-expiry" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">วันเกิด (ค.ศ. YYYY-MM-DD) *</label>
+                                <input type="date" id="apply-dob" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">เบอร์โทรศัพท์ *</label>
+                                <input type="tel" id="apply-phone" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">DC ที่จะเข้าไปวิ่ง *</label>
+                                <input type="text" id="apply-area" placeholder="เช่น รังสิต, บางนา" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">ต้นสังกัดซัพ (ถ้ามี)</label>
+                                <input type="text" id="apply-sup" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-1">ID Line</label>
-                            <input type="text" id="apply-line" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+
+                    <!-- ส่วนที่ 2: ข้อมูลรถและการเริ่มงาน -->
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200 space-y-4">
+                        <h3 class="font-bold text-sm text-red-700 border-b pb-2">2. ข้อมูลยานพาหนะและการเริ่มงาน</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">ประเภทรถที่ใช้งาน *</label>
+                                <select id="apply-vehicle" required class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
+                                    <option value="">-- เลือกประเภทรถ --</option>
+                                    <option value="รถ 4 ล้อ (4W)">รถ 4 ล้อ (4W)</option>
+                                    <option value="มอเตอร์ไซค์ (2W)">มอเตอร์ไซค์ (2W)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">วันที่พร้อมเริ่มงาน *</label>
+                                <input type="date" id="apply-date" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-1">ประเภทรถที่ใช้งาน *</label>
-                            <select id="apply-vehicle" required class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
-                                <option value="">-- เลือกประเภทรถ --</option>
-                                <option value="รถ 4 ล้อ (4W)">รถ 4 ล้อ (4W)</option>
-                                <option value="มอเตอร์ไซค์ (2W)">มอเตอร์ไซค์ (2W)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-1">ทะเบียนรถ</label>
-                            <input type="text" id="apply-plate" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-1">พื้นที่ที่สะดวกวิ่ง</label>
-                            <input type="text" id="apply-area" placeholder="เช่น สาทร, บางนา" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-1">วันที่พร้อมเริ่มงาน</label>
-                            <input type="date" id="apply-date" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            <label class="block text-xs font-bold text-gray-700 mb-1">แผนที่ ที่อยู่ปัจจุบัน (ลิงก์ Google Map) *</label>
+                            <input type="url" id="apply-map" placeholder="https://maps.app.goo.gl/..." required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
                         </div>
                     </div>
-                    <button type="submit" id="btn-submit-apply" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl text-sm transition shadow-md border-b-2 border-yellow-400">
-                        ฝากประวัติสมัครงาน
+
+                    <!-- ส่วนที่ 3: ข้อมูลบัญชีธนาคาร -->
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200 space-y-4">
+                        <h3 class="font-bold text-sm text-red-700 border-b pb-2">3. ข้อมูลบัญชีธนาคาร (สำหรับรับเงิน)</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">ธนาคาร *</label>
+                                <select id="apply-bank-name" required class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-red-500 focus:outline-none">
+                                    <option value="">-- เลือกธนาคาร --</option>
+                                    <option value="ธนาคารไทยพาณิชย์ (SCB)">ธนาคารไทยพาณิชย์ (SCB)</option>
+                                    <option value="ธนาคารกสิกรไทย (KBANK)">ธนาคารกสิกรไทย (KBANK)</option>
+                                    <option value="ธนาคารกรุงเทพ (BBL)">ธนาคารกรุงเทพ (BBL)</option>
+                                    <option value="ธนาคารกรุงไทย (KTB)">ธนาคารกรุงไทย (KTB)</option>
+                                    <option value="ธนาคารทหารไทยธนชาต (TTB)">ธนาคารทหารไทยธนชาต (TTB)</option>
+                                    <option value="ธนาคารกรุงศรีอยุธยา (BAY)">ธนาคารกรุงศรีอยุธยา (BAY)</option>
+                                    <option value="ธนาคารออมสิน (GSB)">ธนาคารออมสิน (GSB)</option>
+                                    <option value="ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร (BAAC)">ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร (BAAC)</option>
+                                    <option value="ธนาคารซีไอเอ็มบี ไทย (CIMBT)">ธนาคารซีไอเอ็มบี ไทย (CIMBT)</option>
+                                    <option value="ธนาคารยูโอบี (UOB)">ธนาคารยูโอบี (UOB)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">เลขบัญชีธนาคาร *</label>
+                                <input type="text" id="apply-bank-no" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">ชื่อบัญชีธนาคาร *</label>
+                                <input type="text" id="apply-bank-accname" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ส่วนที่ 4: ข้อมูลผู้ติดต่อฉุกเฉิน -->
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200 space-y-4">
+                        <h3 class="font-bold text-sm text-red-700 border-b pb-2">4. ผู้ติดต่อกรณีฉุกเฉิน</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">ชื่อ - นามสกุล ผู้ติดต่อกรณีฉุกเฉิน *</label>
+                                <input type="text" id="apply-urgence-name" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">ความสัมพันธ์ *</label>
+                                <input type="text" id="apply-urgence-relation" placeholder="เช่น บิดา, มารดา, พี่น้อง, สามี/ภรรยา" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">เบอร์โทรศัพท์ (ผู้ติดต่อกรณีฉุกเฉิน) *</label>
+                                <input type="tel" id="apply-urgence-phone" required class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ส่วนที่ 5: การแนบรูปถ่าย / เอกสาร -->
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200 space-y-4">
+                        <h3 class="font-bold text-sm text-red-700 border-b pb-2">5. อัปโหลดรูปถ่าย / เอกสารประกอบ</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                            <div>
+                                <label class="block font-bold text-gray-700 mb-1">รูปถ่ายบัตรประชาชน *</label>
+                                <input type="file" id="file-idcard" accept="image/*" required class="w-full p-2 border bg-white rounded-xl text-xs">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-gray-700 mb-1">รูปถ่ายใบขับขี่ *</label>
+                                <input type="file" id="file-license" accept="image/*" required class="w-full p-2 border bg-white rounded-xl text-xs">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-gray-700 mb-1">หน้าสมุดบัญชีธนาคาร *</label>
+                                <input type="file" id="file-bank" accept="image/*" required class="w-full p-2 border bg-white rounded-xl text-xs">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-gray-700 mb-1">สำเนาทะเบียนบ้าน *</label>
+                                <input type="file" id="file-house" accept="image/*" required class="w-full p-2 border bg-white rounded-xl text-xs">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-gray-700 mb-1">สำเนาเล่มทะเบียนรถ *</label>
+                                <input type="file" id="file-vehicle-reg" accept="image/*" required class="w-full p-2 border bg-white rounded-xl text-xs">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-gray-700 mb-1">รูปถ่ายคู่กับรถ (เห็นทะเบียนรถชัดเจน) *</label>
+                                <input type="file" id="file-car-photo" accept="image/*" required class="w-full p-2 border bg-white rounded-xl text-xs">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block font-bold text-gray-700 mb-1">สำเนาบัตรประชาชน (ผู้ติดต่อกรณีฉุกเฉิน) *</label>
+                                <input type="file" id="file-urgence-id" accept="image/*" required class="w-full p-2 border bg-white rounded-xl text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-submit-apply" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl text-sm transition shadow-md border-b-2 border-yellow-400">
+                        ยืนยันการฝากประวัติสมัครงาน
                     </button>
                 </form>
             </div>
@@ -104,7 +219,7 @@
     </main>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4HLcHhtWJqoedtQ12mDIPHNKpxWGw6dfeAN-hL-o2Y1V-S8ZKrz4YferUEgDGVER2EA/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyegIsy7Z9tPWI21f0EfsaRPXvghQxfDAq8fPCc75SMF5SilomAXhRlKYC81yoJtlD_/exec';
         let allJobData = [];
 
         function switchTab(tabId) {
@@ -129,6 +244,13 @@
                         document.getElementById('job-cards-container').innerHTML = '<p class="text-gray-600 text-sm col-span-full text-center">ไม่พบข้อมูลคลังสินค้า</p>';
                         return;
                     }
+
+                    validData.sort((a, b) => {
+                        let quotaA = parseInt(a['โควตา'] || 0, 10);
+                        let quotaB = parseInt(b['โควตา'] || 0, 10);
+                        return quotaB - quotaA;
+                    });
+
                     allJobData = validData;
                     renderJobs(validData);
                 })
@@ -143,11 +265,11 @@
             data.forEach(row => {
                 const dc = row['DC Code'] || '';
                 const name = row['ชื่อคลัง'] || '';
-                const coords = row['Google Maps Link'] || ''; // พิกัด GPS
+                const coords = row['Google Maps Link'] || ''; 
                 const w4 = row['4W'] || '0';
                 const w2 = row['2W'] || '0';
+                const totalQuota = row['โควตา'] || '0';
 
-                // สร้างลิงก์ Google Maps จากพิกัด
                 let mapUrl = '#';
                 if (coords.trim() !== '') {
                     mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coords)}`;
@@ -158,9 +280,10 @@
                         <div>
                             <div class="flex justify-between items-start mb-2">
                                 <span class="bg-red-100 text-red-900 text-xs font-extrabold px-2.5 py-1 rounded-lg">${dc}</span>
-                                <div class="flex gap-2 text-xs font-bold">
+                                <div class="flex gap-2 text-xs font-bold items-center">
                                     <span class="bg-amber-100 text-amber-900 px-2 py-0.5 rounded shadow-sm">📦 4W: ${w4}</span>
                                     <span class="bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded shadow-sm">🛵 2W: ${w2}</span>
+                                    <span class="bg-red-600 text-white px-2 py-0.5 rounded shadow-sm">🔥 รวม: ${totalQuota}</span>
                                 </div>
                             </div>
                             <h3 class="font-extrabold text-gray-900 text-base mb-1">${name}</h3>
@@ -200,13 +323,24 @@
             btn.disabled = true;
 
             const payload = {
-                type: 'ฝากประวัติสมัครงาน',
-                fullname: document.getElementById('apply-name').value,
+                type: 'ฝากประวัติสมัครงานแบบละเอียด',
+                fullnameTh: document.getElementById('apply-name-th').value,
+                fullnameEng: document.getElementById('apply-name-eng').value,
+                idCard: document.getElementById('apply-idcard').value,
+                idCardExpiry: document.getElementById('apply-idcard-expiry').value,
+                dob: document.getElementById('apply-dob').value,
                 phone: document.getElementById('apply-phone').value,
-                lineId: document.getElementById('apply-line').value,
                 vehicle: document.getElementById('apply-vehicle').value,
-                licensePlate: document.getElementById('apply-plate').value,
-                detail: `คลังที่สนใจ/พื้นที่: ${document.getElementById('apply-area').value} | พร้อมเริ่ม: ${document.getElementById('apply-date').value}`
+                startDate: document.getElementById('apply-date').value,
+                dcTarget: document.getElementById('apply-area').value,
+                sup: document.getElementById('apply-sup').value,
+                mapLink: document.getElementById('apply-map').value,
+                bankName: document.getElementById('apply-bank-name').value,
+                bankNo: document.getElementById('apply-bank-no').value,
+                bankAccName: document.getElementById('apply-bank-accname').value,
+                urgenceName: document.getElementById('apply-urgence-name').value,
+                urgenceRelation: document.getElementById('apply-urgence-relation').value,
+                urgencePhone: document.getElementById('apply-urgence-phone').value
             };
 
             try {
@@ -224,7 +358,7 @@
             } catch (error) {
                 alert('เกิดข้อผิดพลาด กรุณาลองใหม่');
             } finally {
-                btn.innerText = 'ฝากประวัติสมัครงาน';
+                btn.innerText = 'ยืนยันการฝากประวัติสมัครงาน';
                 btn.disabled = false;
             }
         });
