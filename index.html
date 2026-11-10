@@ -1,3 +1,6 @@
+นี่คือโค้ด HTML ที่เพิ่มส่วนแสดง **"วันที่อัพเดตข้อมูลล่าสุด (Update 09/11/2026)"** ไว้บริเวณหัวข้อของแคตตาล็อกเรียบร้อยแล้วครับ:
+
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -39,7 +42,10 @@
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
-                        <h2 class="text-lg font-bold text-gray-900">📍 รายชื่อคลังสินค้า KEX และโควตาเปิดรับสมัคร</h2>
+                        <div class="flex items-center gap-2 flex-wrap mb-1">
+                            <h2 class="text-lg font-bold text-gray-900">📍 รายชื่อคลังสินค้า KEX และโควตาเปิดรับสมัคร</h2>
+                            <span class="bg-red-50 text-red-600 border border-red-200 text-xs font-bold px-2.5 py-0.5 rounded-full">Update 09/11/2026</span>
+                        </div>
                         <p class="text-xs font-medium text-gray-600">เรียงตามคลังที่เปิดรับจำนวนมากที่สุดไปน้อยที่สุด</p>
                     </div>
                     <input type="text" id="searchInput" onkeyup="filterJobs()" placeholder="🔍 ค้นหาชื่อคลัง หรือ DC Code..." class="px-4 py-2 border rounded-xl text-sm w-full md:w-72 focus:ring-2 focus:ring-red-500 focus:outline-none">
@@ -205,7 +211,7 @@
                         return;
                     }
                     
-                    // ปรับปรุงเงื่อนไขตรงนี้: นอกจากคัดกรอง DC Code แล้ว ให้กรองเอาเฉพาะโควตาที่ >= 0 (ไม่ติดลบ) ออกด้วย
+                    // กรองเฉพาะ DC ที่ถูกต้อง และโควตาไม่ติดลบ (>= 0)
                     const validData = data.filter(row => {
                         const dc = row['DC Code'] ? row['DC Code'].toString().trim() : '';
                         const quota = parseInt(row['โควตา'] || 0, 10);
@@ -341,3 +347,5 @@
     </script>
 </body>
 </html>
+
+```
