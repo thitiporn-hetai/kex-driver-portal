@@ -204,9 +204,16 @@
                         console.error("Data format error:", data);
                         return;
                     }
-                    const validData = data.filter(row => row['DC Code'] && row['DC Code'].toString().trim() !== '' && row['DC Code'] !== '35');
+                    
+                    // ปรับปรุงเงื่อนไขตรงนี้: นอกจากคัดกรอง DC Code แล้ว ให้กรองเอาเฉพาะโควตาที่ >= 0 (ไม่ติดลบ) ออกด้วย
+                    const validData = data.filter(row => {
+                        const dc = row['DC Code'] ? row['DC Code'].toString().trim() : '';
+                        const quota = parseInt(row['โควตา'] || 0, 10);
+                        return dc !== '' && dc !== '35' && quota >= 0;
+                    });
+
                     if(validData.length === 0) {
-                        document.getElementById('job-cards-container').innerHTML = '<p class="text-gray-600 text-sm col-span-full text-center">ไม่พบข้อมูลคลังสินค้า</p>';
+                        document.getElementById('job-cards-container').innerHTML = '<p class="text-gray-600 text-sm col-span-full text-center">ไม่พบข้อมูลคลังสินค้าที่เปิดรับ</p>';
                         return;
                     }
 
